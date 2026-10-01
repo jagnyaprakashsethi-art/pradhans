@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pradhan's Kitchen</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#071018;
+  color:white;
+  min-height:100vh;
+}
+
+header{
+  background:#12202b;
+  padding:20px;
+  text-align:center;
+  border-bottom:2px solid #f5c842;
+}
+
+header h1{
+  color:#f5c842;
+  margin-bottom:5px;
+}
+
+.container{
+  width:95%;
+  max-width:900px;
+  margin:25px auto;
+}
+
+.card{
+  background:#12202b;
+  border:1px solid #e5b93f;
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:20px;
+}
+
+h2,h3{
+  color:#f5c842;
+  margin-bottom:15px;
+}
+
+input,select{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:none;
+  border-radius:8px;
+  background:#203340;
+  color:white;
+}
+
+button{
+  border:none;
+  border-radius:8px;
+  padding:11px 18px;
+  margin:5px;
+  cursor:pointer;
+  font-weight:bold;
+  background:#f5c842;
+  color:#071018;
+}
+
+button:hover{
+  opacity:.85;
+}
+
+.danger{
+  background:#e74c3c;
+  color:white;
+}
+
+.success{
+  background:#2ecc71;
+  color:white;
+}
+
+.hidden{
+  display:none;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+  margin-top:15px;
+}
+
+.stat{
+  background:#203340;
+  padding:18px;
+  border-radius:12px;
+  text-align:center;
+}
+
+.stat strong{
+  display:block;
+  font-size:28px;
+  color:#f5c842;
+}
+
+.meal-box{
+  background:#203340;
+  padding:18px;
+  border-radius:12px;
+  margin-top:15px;
+}
+
+.user-box{
+  background:#182b38;
+  border:1px solid #456;
+  border-radius:10px;
+  padding:15px;
+  margin:10px 0;
+}
+
+.small{
+  color:#aaa;
+  font-size:13px;
+}
+
+.status-booked{
+  color:#2ecc71;
+  font-weight:bold;
+}
+
+.status-not{
+  color:#ffcc00;
+  font-weight:bold;
+}
+
+#message{
+  text-align:center;
+  margin:10px;
+  color:#f5c842;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🍽️ PRADHAN'S KITCHEN</h1>
+  <p>Cloud Kitchen • Customer Portal</p>
+</header>
+
+<div class="container">
+
+<!-- LOGIN -->
+<section id="loginPage" class="card">
+  <h2>Customer Login</h2>
+
+  <input id="loginId" type="text" placeholder="Enter User ID">
+  <button onclick="customerLogin()">Customer Login</button>
+
+  <hr style="margin:20px 0;border-color:#456">
+
+  <h2>Admin Login</h2>
+
+  <input id="adminPassword" type="password" placeholder="Admin Password">
+  <button onclick="adminLogin()">Admin Login</button>
+
+  <p id="message"></p>
+
+  <p class="small">
+    Demo User ID: USER001
+  </p>
+</section>
+
+
+<!-- CUSTOMER -->
+<section id="customerPage" class="hidden">
+
+  <div class="card">
+    <h2>👤 Customer Profile</h2>
+
+    <p>Name: <b id="userName"></b></p>
+    <p>User ID: <b id="userId"></b></p>
+    <p>Month: <b id="currentMonth"></b></p>
+    <p>Today: <b id="todayDate"></b></p>
+  </div>
+
+
+  <div class="card">
+    <h2>🍽️ Monthly Meal Count</h2>
+
+    <div class="stats">
+
+      <div class="stat">
+        <strong id="dayTaken">0</strong>
+        Day Taken
+        <br>
+        <span id="dayRemain">30</span> Remaining
+      </div>
+
+      <div class="stat">
+        <strong id="nightTaken">0</strong>
+        Night Taken
+        <br>
+        <span id="nightRemain">30</span> Remaining
+      </div>
+
+      <div class="stat">
+        <strong id="totalTaken">0</strong>
+        Total Taken
+        <br>
+        <span id="totalRemain">60</span> Remaining
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h2>🍛 Today's Meal</h2>
+
+    <div class="meal-box">
+      <h3>☀️ Day Meal</h3>
+      <p id="dayStatus">Not Booked</p>
+
+      <button id="dayBookBtn" class="success"
+              onclick="bookMeal('day')">
+        Book Day Meal
+      </button>
+
+      <button id="dayCancelBtn"
+              class="danger hidden"
+              onclick="cancelMeal('day')">
+        Cancel Day Meal
+      </button>
+    </div>
+
+
+    <div class="meal-box">
+      <h3>🌙 Night Meal</h3>
+      <p id="nightStatus">Not Booked</p>
+
+      <button id="nightBookBtn" class="success"
+              onclick="bookMeal('night')">
+        Book Night Meal
+      </button>
+
+      <button id="nightCancelBtn"
+              class="danger hidden"
+              onclick="cancelMeal('night')">
+        Cancel Night Meal
+      </button>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <h2>📅 Booking History</h2>
+    <div id="history"></div>
+  </div>
+
+
+  <button onclick="logout()">Logout</button>
+
+</section>
+
+
+<!-- ADMIN -->
+<section id="adminPage" class="hidden">
+
+  <div class="card">
+    <h2>🔐 Admin Panel</h2>
+    <p>Month: <b id="adminMonth"></b></p>
+    <p>Today: <b id="adminToday"></b></p>
+  </div>
+
+
+  <div class="card">
+    <h2>➕ Add Customer</h2>
+
+    <input id="newUserId" placeholder="User ID">
+    <input id="newUserName" placeholder="Customer Name">
+
+    <button onclick="addUser()">Add User</button>
+  </div>
+
+
+  <div class="card">
+    <h2>👥 Customer Management</h2>
+
+    <div id="adminUsers"></div>
+  </div>
+
+
+  <button onclick="logout()">Logout</button>
+
+</section>
+
+</div>
+
+
+<script>
+
+const ADMIN_PASSWORD = "admin123";
+
+let users = JSON.parse(localStorage.getItem("pkUsers")) || {};
+
+let currentUser = null;
+
+
+/* ---------------- DEFAULT USER ---------------- */
+
+if(!users["USER001"]){
+
+  users["USER001"] = {
+    name:"Demo Customer",
+    months:{}
+  };
+
+  saveUsers();
+}
+
+
+/* ---------------- STORAGE ---------------- */
+
+function saveUsers(){
+
+  localStorage.setItem(
+    "pkUsers",
+    JSON.stringify(users)
+  );
+
+}
+
+
+/* ---------------- DATE ---------------- */
+
+function getToday(){
+
+  const d = new Date();
+
+  return d.getFullYear() + "-" +
+    String(d.getMonth()+1).padStart(2,"0") + "-" +
+    String(d.getDate()).padStart(2,"0");
+
+}
+
+
+function getMonth(){
+
+  const d = new Date();
+
+  return d.getFullYear() + "-" +
+    String(d.getMonth()+1).padStart(2,"0");
+
+}
+
+
+function getMonthName(){
+
+  return new Date().toLocaleDateString(
+    "en-IN",
+    {
+      month:"long",
+      year:"numeric"
+    }
+  );
+
+}
+
+
+function getTodayText(){
+
+  return new Date().toLocaleDateString(
+    "en-IN",
+    {
+      day:"2-digit",
+      month:"long",
+      year:"numeric"
+    }
+  );
+
+}
+
+
+/* ---------------- MONTH DATA ---------------- */
+
+function getMonthData(user){
+
+  const month = getMonth();
+
+  if(!user.months){
+    user.months = {};
+  }
+
+  if(!user.months[month]){
+
+    user.months[month] = {
+      day:[],
+      night:[]
+    };
+
+  }
+
+  return user.months[month];
+
+}
+
+
+/* ---------------- CUSTOMER LOGIN ---------------- */
+
+function customerLogin(){
+
+  const id =
+    document.getElementById("loginId")
+    .value
+    .trim()
+    .toUpperCase();
+
+  if(!id){
+
+    showMessage("Please enter User ID");
+    return;
+
+  }
+
+  if(!users[id]){
+
+    showMessage("User ID not found");
+    return;
+
+  }
+
+  currentUser = id;
+
+  document
+    .getElementById("loginPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("customerPage")
+    .classList.remove("hidden");
+
+  loadCustomer();
+
+}
+
+
+/* ---------------- CUSTOMER DATA ---------------- */
+
+function loadCustomer(){
+
+  const user = users[currentUser];
+
+  const data = getMonthData(user);
+
+  const today = getToday();
+
+  document.getElementById("userName").innerText =
+    user.name;
+
+  document.getElementById("userId").innerText =
+    currentUser;
+
+  document.getElementById("currentMonth").innerText =
+    getMonthName();
+
+  document.getElementById("todayDate").innerText =
+    getTodayText();
+
+
+  const dayTaken = data.day.length;
+  const nightTaken = data.night.length;
+  const totalTaken = dayTaken + nightTaken;
+
+
+  document.getElementById("dayTaken").innerText =
+    dayTaken;
+
+  document.getElementById("nightTaken").innerText =
+    nightTaken;
+
+  document.getElementById("totalTaken").innerText =
+    totalTaken;
+
+
+  document.getElementById("dayRemain").innerText =
+    30 - dayTaken;
+
+  document.getElementById("nightRemain").innerText =
+    30 - nightTaken;
+
+  document.getElementById("totalRemain").innerText =
+    60 - totalTaken;
+
+
+  const dayBooked =
+    data.day.includes(today);
+
+  const nightBooked =
+    data.night.includes(today);
+
+
+  updateMealButton(
+    "day",
+    dayBooked
+  );
+
+  updateMealButton(
+    "night",
+    nightBooked
+  );
+
+
+  loadHistory(data);
+
+}
+
+
+/* ---------------- BOOK MEAL ---------------- */
+
+function bookMeal(type){
+
+  if(!currentUser) return;
+
+  const user = users[currentUser];
+
+  const data = getMonthData(user);
+
+  const today = getToday();
+
+  if(type === "day"){
+
+    if(data.day.includes(today)){
+
+      showMessage("Day meal already booked");
+      return;
+
+    }
+
+    if(data.day.length >= 30){
+
+      showMessage("Day meal limit is 30");
+      return;
+
+    }
+
+    data.day.push(today);
+
+  }
+
+
+  if(type === "night"){
+
+    if(data.night.includes(today)){
+
+      showMessage("Night meal already booked");
+      return;
+
+    }
+
+    if(data.night.length >= 30){
+
+      showMessage("Night meal limit is 30");
+      return;
+
+    }
+
+    data.night.push(today);
+
+  }
+
+
+  saveUsers();
+
+  loadCustomer();
+
+  showMessage("Meal booked successfully");
+
+}
+
+
+/* ---------------- CANCEL MEAL ---------------- */
+
+function cancelMeal(type){
+
+  if(!currentUser) return;
+
+  const user = users[currentUser];
+
+  const data = getMonthData(user);
+
+  const today = getToday();
+
+  const arr =
+    type === "day"
+      ? data.day
+      : data.night;
+
+
+  const index =
+    arr.indexOf(today);
+
+
+  if(index === -1){
+
+    showMessage("Meal is not booked");
+    return;
+
+  }
+
+
+  arr.splice(index,1);
+
+  saveUsers();
+
+  loadCustomer();
+
+  showMessage("Meal cancelled successfully");
+
+}
+
+
+/* ---------------- BUTTON STATUS ---------------- */
+
+function updateMealButton(type, booked){
+
+  const bookBtn =
+    document.getElementById(
+      type + "BookBtn"
+    );
+
+  const cancelBtn =
+    document.getElementById(
+      type + "CancelBtn"
+    );
+
+  const status =
+    document.getElementById(
+      type + "Status"
+    );
+
+
+  if(booked){
+
+    status.innerText = "✅ Booked / Taken";
+
+    status.className = "status-booked";
+
+    bookBtn.classList.add("hidden");
+
+    cancelBtn.classList.remove("hidden");
+
+  }else{
+
+    status.innerText = "❌ Not Booked";
+
+    status.className = "status-not";
+
+    bookBtn.classList.remove("hidden");
+
+    cancelBtn.classList.add("hidden");
+
+  }
+
+}
+
+
+/* ---------------- HISTORY ---------------- */
+
+function loadHistory(data){
+
+  const box =
+    document.getElementById("history");
+
+  let html = "";
+
+  if(data.day.length === 0 &&
+     data.night.length === 0){
+
+    html = "<p>No meals booked yet.</p>";
+
+  }else{
+
+    html += "<h3>☀️ Day Meals</h3>";
+
+    if(data.day.length){
+
+      data.day.forEach(date => {
+
+        html += "<p>✅ " +
+          formatDate(date) +
+          "</p>";
+
+      });
+
+    }else{
+
+      html += "<p>No Day meals.</p>";
+
+    }
+
+
+    html += "<h3 style='margin-top:15px'>🌙 Night Meals</h3>";
+
+    if(data.night.length){
+
+      data.night.forEach(date => {
+
+        html += "<p>✅ " +
+          formatDate(date) +
+          "</p>";
+
+      });
+
+    }else{
+
+      html += "<p>No Night meals.</p>";
+
+    }
+
+  }
+
+
+  box.innerHTML = html;
+
+}
+
+
+function formatDate(date){
+
+  const d =
+    new Date(date + "T00:00:00");
+
+  return d.toLocaleDateString(
+    "en-IN",
+    {
+      day:"2-digit",
+      month:"long",
+      year:"numeric"
+    }
+  );
+
+}
+
+
+/* ---------------- ADMIN LOGIN ---------------- */
+
+function adminLogin(){
+
+  const password =
+    document.getElementById("adminPassword")
+    .value;
+
+  if(password !== ADMIN_PASSWORD){
+
+    showMessage("Wrong admin password");
+    return;
+
+  }
+
+
+  document
+    .getElementById("loginPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("adminPage")
+    .classList.remove("hidden");
+
+
+  loadAdmin();
+
+}
+
+
+/* ---------------- ADMIN PANEL ---------------- */
+
+function loadAdmin(){
+
+  document.getElementById("adminMonth")
+    .innerText = getMonthName();
+
+  document.getElementById("adminToday")
+    .innerText = getTodayText();
+
+
+  const box =
+    document.getElementById("adminUsers");
+
+  box.innerHTML = "";
+
+
+  Object.keys(users).forEach(id => {
+
+    const user = users[id];
+
+    const data = getMonthData(user);
+
+    const today = getToday();
+
+    const dayBooked =
+      data.day.includes(today);
+
+    const nightBooked =
+      data.night.includes(today);
+
+
+    const total =
+      data.day.length +
+      data.night.length;
+
+
+    const div =
+      document.createElement("div");
+
+    div.className = "user-box";
+
+
+    div.innerHTML = `
+      <h3>${escapeHTML(user.name)}</h3>
+
+      <p>User ID:
+        <b>${escapeHTML(id)}</b>
+      </p>
+
+      <p>
+        Day:
+        <b>${data.day.length}/30</b>
+        —
+        ${dayBooked
+          ? '<span class="status-booked">Booked/Taken</span>'
+          : '<span class="status-not">Not Booked</span>'}
+      </p>
+
+      <p>
+        Night:
+        <b>${data.night.length}/30</b>
+        —
+        ${nightBooked
+          ? '<span class="status-booked">Booked/Taken</span>'
+          : '<span class="status-not">Not Booked</span>'}
+      </p>
+
+      <p>
+        Total:
+        <b>${total}/60 Taken</b>
+        |
+        <b>${60-total}/60 Remaining</b>
+      </p>
+
+      <button
+        class="success"
+        onclick="adminTake('${id}','day')">
+        Take Day
+      </button>
+
+      <button
+        class="danger"
+        onclick="adminCancel('${id}','day')">
+        Cancel Day
+      </button>
+
+      <button
+        class="success"
+        onclick="adminTake('${id}','night')">
+        Take Night
+      </button>
+
+      <button
+        class="danger"
+        onclick="adminCancel('${id}','night')">
+        Cancel Night
+      </button>
+
+      <button
+        class="danger"
+        onclick="deleteUser('${id}')">
+        Delete User
+      </button>
+    `;
+
+
+    box.appendChild(div);
+
+  });
+
+}
+
+
+/* ---------------- ADMIN TAKE ---------------- */
+
+function adminTake(id,type){
+
+  const user = users[id];
+
+  const data = getMonthData(user);
+
+  const today = getToday();
+
+  const arr =
+    type === "day"
+      ? data.day
+      : data.night;
+
+
+  if(arr.includes(today)){
+
+    alert(
+      type.toUpperCase() +
+      " meal already booked today."
+    );
+
+    return;
+
+  }
+
+
+  if(arr.length >= 30){
+
+    alert(
+      type.toUpperCase() +
+      " monthly limit is 30."
+    );
+
+    return;
+
+  }
+
+
+  arr.push(today);
+
+  saveUsers();
+
+  loadAdmin();
+
+}
+
+
+/* ---------------- ADMIN CANCEL ---------------- */
+
+function adminCancel(id,type){
+
+  const user = users[id];
+
+  const data = getMonthData(user);
+
+  const today = getToday();
+
+  const arr =
+    type === "day"
+      ? data.day
+      : data.night;
+
+
+  const index =
+    arr.indexOf(today);
+
+
+  if(index === -1){
+
+    alert("Today's meal is not booked.");
+
+    return;
+
+  }
+
+
+  arr.splice(index,1);
+
+  saveUsers();
+
+  loadAdmin();
+
+}
+
+
+/* ---------------- ADD USER ---------------- */
+
+function addUser(){
+
+  const id =
+    document.getElementById("newUserId")
+    .value
+    .trim()
+    .toUpperCase();
+
+  const name =
+    document.getElementById("newUserName")
+    .value
+    .trim();
+
+
+  if(!id || !name){
+
+    alert("Enter User ID and Name");
+    return;
+
+  }
+
+
+  if(users[id]){
+
+    alert("User ID already exists");
+    return;
+
+  }
+
+
+  users[id] = {
+    name:name,
+    months:{}
+  };
+
+
+  saveUsers();
+
+  document.getElementById("newUserId")
+    .value = "";
+
+  document.getElementById("newUserName")
+    .value = "";
+
+
+  loadAdmin();
+
+  alert("Customer added successfully");
+
+}
+
+
+/* ---------------- DELETE USER ---------------- */
+
+function deleteUser(id){
+
+  if(!confirm(
+    "Delete " + id + "?"
+  )){
+
+    return;
+
+  }
+
+
+  delete users[id];
+
+  saveUsers();
+
+  loadAdmin();
+
+}
+
+
+/* ---------------- LOGOUT ---------------- */
+
+function logout(){
+
+  currentUser = null;
+
+  document
+    .getElementById("customerPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("adminPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("loginPage")
+    .classList.remove("hidden");
+
+  document.getElementById("loginId")
+    .value = "";
+
+  document.getElementById("adminPassword")
+    .value = "";
+
+}
+
+
+/* ---------------- MESSAGE ---------------- */
+
+function showMessage(text){
+
+  const msg =
+    document.getElementById("message");
+
+  msg.innerText = text;
+
+  setTimeout(() => {
+
+    msg.innerText = "";
+
+  },3000);
+
+}
+
+
+/* ---------------- SECURITY ---------------- */
+
+function escapeHTML(text){
+
+  return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+</script>
+
+</body>
+</html>
